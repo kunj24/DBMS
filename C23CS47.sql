@@ -415,7 +415,7 @@ WHERE Job_ID LIKE 'FI_%';
 
 -- 2. Retrieve job titles ending with '_MGR' and max salary > 12000
 SELECT job_title FROM Job
-WHERE job_title LIKE '%_MGR' AND max_sal > 12000;
+WHERE job_id LIKE '%_MGR' AND max_sal > 12000;
 
 -- Final Verification Queries
 SELECT * FROM Employee;
@@ -423,6 +423,368 @@ SELECT * FROM Customer;
 
 
 -----------------------------------Prc 5----------------------------------------
+
+
+-- Creating the JobProfile table
+CREATE TABLE JobProfile (
+    Emp_ID NUMBER PRIMARY KEY,
+    Emp_Name VARCHAR2(50) NOT NULL,
+    Emp_Salary NUMBER(10, 2) NOT NULL CHECK (Emp_Salary > 0),
+    Job_ID VARCHAR2(15) UNIQUE,
+    Department VARCHAR2(50)
+);
+
+-- Creating the Customer table
+CREATE TABLE Customer (
+    Cust_ID NUMBER PRIMARY KEY,
+    Cust_Name VARCHAR2(50) NOT NULL
+);
+
+
+-- Inserting data into JobProfile
+INSERT INTO JobProfile VALUES (1, 'John', 5000, 'JOB01', 'HR');
+INSERT INTO JobProfile VALUES (2, 'Alice', 7500, 'JOB02', 'Finance');
+INSERT INTO JobProfile VALUES (3, 'Bob', 3000, 'JOB03', 'IT');
+INSERT INTO JobProfile VALUES (4, 'Eve', 9000, 'JOB04', 'Marketing');
+INSERT INTO JobProfile VALUES (5, 'Charlie', 6000, 'JOB05', 'IT');
+
+-- Inserting data into Customer
+INSERT INTO Customer VALUES (101, 'Anil');
+INSERT INTO Customer VALUES (102, 'Sunil');
+INSERT INTO Customer VALUES (103, 'Jay');
+INSERT INTO Customer VALUES (104, 'Vijay');
+INSERT INTO Customer VALUES (105, 'Keyur');
+
+SELECT * FROM JobProfile;
+SELECT * FROM Customer;
+
+-- 1. Average Salary Queries
+SELECT AVG(Emp_Salary) AS Average_Salary FROM JobProfile;
+SELECT AVG(DISTINCT Emp_Salary) AS Distinct_Average_Salary FROM JobProfile;
+
+-- 2. Minimum Salary Query
+SELECT MIN(Emp_Salary) AS Minimum_Salary FROM JobProfile;
+
+-- 3. Count Employees and Distinct Departments
+SELECT COUNT(*) AS Total_Employees, COUNT(DISTINCT Department) AS Distinct_Departments FROM JobProfile;
+
+-- 4. Maximum Salary Query
+SELECT MAX(Emp_Salary) AS Maximum_Salary FROM JobProfile;
+
+-- 5. Total and Distinct Sum of Salaries
+SELECT SUM(Emp_Salary) AS Total_Salaries FROM JobProfile;
+SELECT SUM(DISTINCT Emp_Salary) AS Distinct_Salaries FROM JobProfile;
+
+-------------------------
+
+-- 1. Absolute Difference from 1000
+SELECT Emp_ID, Emp_Name, ABS(Emp_Salary - 1000) AS Salary_Difference FROM JobProfile;
+
+-- 2. Salary Squared
+SELECT Emp_ID, Emp_Name, POWER(Emp_Salary, 2) AS Salary_Squared FROM JobProfile;
+
+-- 3. Round Salaries to Two Decimal Places
+SELECT Emp_ID, Emp_Name, ROUND(Emp_Salary, 2) AS Rounded_Salary FROM JobProfile;
+
+-- 4. Square Root of Salaries
+SELECT Emp_ID, Emp_Name, SQRT(Emp_Salary) AS Salary_Square_Root FROM JobProfile;
+
+--------------
+
+-- 1. Name Transformations
+SELECT Emp_Name, LOWER(Emp_Name) AS Lowercase_Name FROM JobProfile;
+SELECT Emp_Name, UPPER(Emp_Name) AS Uppercase_Name FROM JobProfile;
+SELECT Emp_Name, INITCAP(Emp_Name) AS Initial_Caps_Name FROM JobProfile;
+
+--2
+SELECT Emp_Name, SUBSTR(Emp_Name, 1, 3) AS First_Three_Chars FROM JobProfile;
+
+--3
+SELECT Emp_Name, LENGTH(Emp_Name) AS Name_Length FROM JobProfile;
+
+--4
+SELECT Emp_Name, LTRIM(Emp_Name, 'A') AS Leading_Trimmed_Name, RTRIM(Emp_Name, 'a')
+AS Trailing_Trimmed_Name FROM JobProfile;
+
+--5
+SELECT Emp_Name, LPAD(Emp_Name, 10, '') AS Left_Padded, RPAD(Emp_Name, 10, '') 
+AS Right_Padded FROM JobProfile;
+
+----------
+
+
+-- 1. Data Type Conversions
+SELECT TO_NUMBER('10000.50') AS Numeric_Conversion FROM DUAL;
+
+--2
+SELECT TO_CHAR(5000, '999G999D99') AS Formatted_Salary FROM DUAL;
+
+
+
+-- 1. Date Calculations
+SELECT ADD_MONTHS(SYSDATE, 6) AS Date_After_6_Months FROM DUAL;
+
+--2
+SELECT LAST_DAY(SYSDATE) AS Last_Day_Of_Month FROM DUAL;
+
+--3
+SELECT MONTHS_BETWEEN(TO_DATE('2025-12-31', 'YYYY-MM-DD'), SYSDATE) AS Months_Between FROM DUAL;
+
+--4
+SELECT NEXT_DAY(SYSDATE, 'MONDAY') AS Next_Monday FROM DUAL;
+
+
+
+-- 1. Union, Intersection, and Difference of Names
+SELECT Emp_Name AS Name FROM JobProfile
+UNION
+SELECT Cust_Name AS Name FROM Customer;
+
+--2
+SELECT Emp_Name AS Name FROM JobProfile
+UNION ALL
+SELECT Cust_Name AS Name FROM Customer;
+
+
+--3
+SELECT Emp_Name AS Name FROM JobProfile
+INTERSECT
+SELECT Cust_Name AS Name FROM Customer;
+
+--4
+SELECT Emp_Name AS Name FROM JobProfile
+MINUS
+SELECT Cust_Name AS NAME FROM Customer
+
+
+
+------------------------------------Prc 6---------------------------------------
+
+
+
+
+
+-- Step 1: Drop the Product table if it already exists to avoid duplication
+DROP TABLE Product CASCADE CONSTRAINTS;
+
+-- Step 2: Create the Product table with proper constraints
+CREATE TABLE Product (
+    Detorder_no VARCHAR2(10),                -- Order number for the product
+    Product_no VARCHAR2(10) NOT NULL,       -- Product number (must not be NULL)
+    Qty_order NUMBER(10) CHECK (Qty_order > 0), -- Quantity ordered (must be positive)
+    CONSTRAINT PK_Product PRIMARY KEY (Detorder_no, Product_no) -- Composite Primary Key
+);
+
+-- Step 3: Insert the given data into the Product table
+-- Insert row 1
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19001', 'P00001', 10);
+
+-- Insert row 2
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19001', 'P00002', 3);
+
+-- Insert row 3
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19002', 'P00001', 4);
+
+-- Insert row 4
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19003', 'P00004', 2);
+
+-- Insert row 5
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19004', 'P00003', 6);
+
+-- Insert row 6
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19005', 'P00005', 2);
+
+-- Insert row 7
+INSERT INTO Product (Detorder_no, Product_no, Qty_order) 
+VALUES ('O19006', 'P00004', 7);
+
+-- Step 4: Display all rows from the Product table to verify the data
+SELECT * FROM Product;
+
+
+SELECT Product_no, SUM(Qty_order) AS Total_Quantity
+FROM Product
+GROUP BY Product_no;
+
+
+SELECT Product_no, SUM(Qty_order) AS Total_Quantity
+FROM Product
+WHERE Product_no IN ('P00001', 'P00004')
+GROUP BY Product_no;
+
+
+
+-- Create emp_company table
+CREATE TABLE emp_company (
+    ENAME VARCHAR(50) NOT NULL UNIQUE,
+    CNAME VARCHAR(50) NOT NULL,
+    SALARY INT NOT NULL CHECK (SALARY > 0)
+);
+
+-- Insert employee data
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Anil', 'ACC', 1500);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Shankar', 'TATA', 2000);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Jay', 'WIPRO', 1800);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Sunil', 'WIPRO', 1700);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Vijay', 'TATA', 5000);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Prakash', 'TATA', 3000);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Ajay', 'ACC', 8000);
+
+INSERT INTO emp_company (ENAME, CNAME, SALARY) 
+VALUES ('Abhay', 'ACC', 1800);
+
+
+-- Test Case 1: Display all rows from the emp_company table
+SELECT * FROM emp_company;
+
+-- Test Case 2: Maximum salary per company
+SELECT CNAME, MAX(SALARY) AS Max_Salary
+FROM emp_company
+GROUP BY CNAME;
+
+-- Test Case 3: Average salary per company
+SELECT CNAME, AVG(SALARY) AS Avg_Salary
+FROM emp_company
+GROUP BY CNAME;
+
+-- Task 4: List names of companies with an average salary greater than ₹1,500
+SELECT CNAME
+FROM emp_company
+GROUP BY CNAME
+HAVING AVG(SALARY) > 1500;
+
+-- Task 5: Calculate the average salary for each company except 'ACC'
+SELECT CNAME, AVG(SALARY) AS Avg_Salary
+FROM emp_company
+WHERE CNAME != 'ACC'
+GROUP BY CNAME;
+
+
+
+--------------------------------------------------------------------------------
+
+CREATE TABLE Salespeople1 (
+    Snum INT PRIMARY KEY,
+    Sname VARCHAR(50) NOT NULL,
+    City VARCHAR(50),
+    Comm DECIMAL(5, 2)
+);
+
+INSERT INTO Salespeople1(Snum ,Sname, city ,comm)
+values (1001,'Peel','London',0.12);
+INSERT INTO Salespeople1(Snum ,Sname, city ,comm)
+values (1002,'Serres','San Jose',0.13);
+INSERT INTO Salespeople1(Snum ,Sname, city ,comm)
+values (1004,'Motika','London',0.11);
+INSERT INTO Salespeople1(Snum ,Sname, city ,comm)
+values (1007,'Rifkin','bercelona',0.15);
+INSERT INTO Salespeople1(Snum ,Sname, city ,comm)
+values (1003,'Axelord','NewYork',0.10);
+
+CREATE TABLE Customer1 (
+    Cnum INT PRIMARY KEY,
+    Cname VARCHAR(50) NOT NULL,
+    City VARCHAR(50),
+    Rating INT DEFAULT 10,
+    Snum INT,
+    FOREIGN KEY (Snum) REFERENCES Salespeople(Snum)
+);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2001, 'hoffman', 'London', 100,1001);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2002, 'Giovanne', 'Rome', 200,1003);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2003, 'liu', 'San Jose', 300,1002);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2004, 'Grass', 'Berlin', 100,1002);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2006, 'Clemens', 'London', 300,1007);
+
+INSERT INTO Customer1 (Cnum, Cname, City,Rating, Snum)
+VALUES (2007, 'Pereira', 'Rome', 100,1004);
+
+
+CREATE TABLE Ordertable1 (
+    Onum INT PRIMARY KEY,
+    amt DECIMAL(10, 2),
+    Odate DATE,
+    Cnum INT,
+    Snum INT,
+    FOREIGN KEY (Cnum) REFERENCES Customer(Cnum),
+    FOREIGN KEY (Snum) REFERENCES Salespeople(Snum)
+);
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3001,18.96,10.3.94,2002,1002);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3003,767.19,10.3.94,2001,1001);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3002,1900.10,10.3.94,2007,1003);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3005,5160.45,10.3.94,2003,1002);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3006,1098.16,10.3.94,2008,1002);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3009,1713.23,10.4.94,2002,1003);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3007,75.75,10.4.94,2004,1002);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3008,4723.95,10.5.94,2006,1001);
+
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3010,1309.95,10.6.94,2004,1002);
+
+INSERT INTO Ordertable1(Onum,amt,odate,Cnum,Snum)
+VALUES(3011,9891.00,10.6.94,2006,1001);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
